@@ -5,10 +5,18 @@ import Search from "./Search";
 
 function PlantPage() {
   const [plants, setPlants] = useState ([])
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const filteredPlants = plants.filter(plant =>
+  plant.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
+function handleNewPlant(newPlant){
+  setPlants([...plants,newPlant])
+}
   function loadPlants(){
     fetch ("http://localhost:6001/plants")
+    
     .then(response =>{
       if(!response.ok){
         throw new Error ("Oops can get plant") }
@@ -30,9 +38,9 @@ function PlantPage() {
   
   return (
     <main>
-      <NewPlantForm />
-      <Search />
-      <PlantList plants={plants}/>
+      <NewPlantForm onAddPlant = {handleNewPlant}/>
+      <Search searchTerm={searchTerm} onSearchChange={setSearchTerm}  />
+      <PlantList plants={filteredPlants}/>
     </main>
   );
 }
